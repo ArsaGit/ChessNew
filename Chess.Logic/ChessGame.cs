@@ -29,13 +29,13 @@ namespace Chess.Logic
 			{
 				menu.Draw();
 				menu.SelectButton();
-			} while (menu.IsRunning());
+			} while (menu.IsRunning);
 		}
 
 		private void ActivateButton()
 		{
 			Console.Clear();
-			int key = menu.GetNumberOfCurrentButton();
+			int key = menu.CurrentButtonNumber;
 
 			switch (key)
 			{

@@ -7,11 +7,13 @@
 	{
 		private const int boardWidth = 8;
 		private const int boardHeight = 8;
-		private int indent = 3;
+		private readonly int indent = 3;
 
-		private int cellWidth = 3;
-		private int cellHeight = 1;
+		private readonly int cellWidth = 3;
+		private readonly int cellHeight = 1;
 
+		private const ConsoleColor SelectedColor = ConsoleColor.Green;
+		private const ConsoleColor DefaultTextColor = ConsoleColor.White;
 
 		public void Draw(Menu menu)
 		{
@@ -24,16 +26,16 @@
 			{
 				if (menu.isCurrentButton(i))
 				{
-					Console.ForegroundColor = menu.GetSelectedColor();
+					Console.ForegroundColor = SelectedColor;
 				}
 				else
 				{
-					Console.ForegroundColor = menu.GetDefaultTextColor();
+					Console.ForegroundColor = DefaultTextColor;
 				}
 				Console.WriteLine(buttons[i]);
 			}
 
-			menu.ResetColor();
+			ResetColor();
 		}
 
 		public void DrawNewGame()
@@ -119,7 +121,7 @@
 						else Console.Write(" ");
 					}
 
-					Console.ResetColor();
+					ResetColor();
 				}
 			}
 		}
@@ -156,6 +158,11 @@
 				Console.SetCursorPosition(indent - 1, indent + i * yStep + 1);
 				Console.Write(boardNotation[1, i]);
 			}
+		}
+
+		public void ResetColor()
+		{
+			Console.ForegroundColor = DefaultTextColor;
 		}
 	}
 }
