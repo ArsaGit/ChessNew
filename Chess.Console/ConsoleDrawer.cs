@@ -24,7 +24,7 @@
 
 			for (int i = 0; i < buttons.Length; i++)
 			{
-				if (menu.isCurrentButton(i))
+				if (menu.IsCurrentButton(i))
 				{
 					Console.ForegroundColor = SelectedColor;
 				}

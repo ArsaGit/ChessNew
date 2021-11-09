@@ -7,7 +7,7 @@ namespace Chess.Console
 	{
 		static void Main(string[] args)
 		{
-			ChessGame chess = new(new ConsoleDrawer());
+			ChessGame chess = new(new ConsoleDrawer(), new ConsoleLogic());
 			chess.Run();
 		}
 	}

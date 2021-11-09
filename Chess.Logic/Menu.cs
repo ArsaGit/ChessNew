@@ -1,4 +1,4 @@
-﻿using Chess.Logic;
+﻿
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +10,7 @@ namespace Chess.Logic
 	public class Menu
 	{
 		private readonly IDrawer drawer;
+		private readonly ILogic logic;
 		private string[] buttons = {"New game",
 							"Continue",
 							"Rating",
@@ -32,30 +33,16 @@ namespace Chess.Logic
 
 		public bool IsRunning { get; set; }
 
-		public Menu(IDrawer drawer)
+		public Menu(IDrawer drawer, ILogic logic)
 		{
 			this.drawer = drawer;
+			this.logic = logic;
 			IsRunning = true;
 		}
 
 		public void SelectButton()
 		{
-			ConsoleKeyInfo chInput = Console.ReadKey();
-
-			switch (chInput.Key)
-			{
-				case ConsoleKey.UpArrow:
-				case ConsoleKey.W:
-					CurrentButtonNumber--;
-					break;
-				case ConsoleKey.DownArrow:
-				case ConsoleKey.S:
-					CurrentButtonNumber++;
-					break;
-				case ConsoleKey.Enter:
-					IsRunning = false;
-					break;
-			}
+			logic.SelectButton(this);
 		}
 
 		public void Draw()
@@ -68,7 +55,7 @@ namespace Chess.Logic
 			return buttons;
 		}
 
-		public bool isCurrentButton(int i)	//тут если с большой буквы метод, то программа не собирается
+		public bool IsCurrentButton(int i)	//я тупой
 		{
 			return CurrentButtonNumber == i;
 		}

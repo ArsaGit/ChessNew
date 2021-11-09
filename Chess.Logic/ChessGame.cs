@@ -9,12 +9,14 @@ namespace Chess.Logic
 	public class ChessGame
 	{
 		private readonly IDrawer drawer;
+		private readonly ILogic logic;
 		private readonly Menu menu;
 
-		public ChessGame(IDrawer drawer)
+		public ChessGame(IDrawer drawer, ILogic logic)
 		{
 			this.drawer = drawer;
-			menu = new Menu(drawer);
+			this.logic = logic;
+			menu = new Menu(drawer, logic);
 		}
 
 		public void Run()
