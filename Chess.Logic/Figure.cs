@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Chess.Logic
 {
-	public abstract class Figure
+	public abstract class Figure : ICloneable
 	{
 		public abstract char OneLetter { get; }
 		public abstract string Name { get; }
@@ -18,6 +18,11 @@ namespace Chess.Logic
 		public char ToChar()
 		{
 			return OneLetter;
+		}
+
+		public object Clone()
+		{
+			return MemberwiseClone();
 		}
 	}
 

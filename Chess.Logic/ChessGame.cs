@@ -62,8 +62,8 @@ namespace Chess.Logic
 			Player player1 = CreatePlayer();
 			//Console.WriteLine("Enter Player2:");
 			//Player player2 = CreatePlayer();
-			Match match = new Match(drawer, player1);
-			match.Draw();
+			Match match = new(drawer, logic, player1);
+			match.Run();
 		}
 
 		private Player CreatePlayer()

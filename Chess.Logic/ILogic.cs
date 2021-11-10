@@ -9,5 +9,6 @@ namespace Chess.Logic
 	public interface ILogic
 	{
 		void SelectButton(Menu menu);
+		void SelectTile(Match match);
 	}
 }

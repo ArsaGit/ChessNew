@@ -27,5 +27,37 @@ namespace Chess.Logic
 					break;
 			}
 		}
+
+		public void SelectTile(Match match)
+		{
+			ConsoleKeyInfo chInput = Console.ReadKey();
+			match.IsSelecting = true;
+
+			switch (chInput.Key)
+			{
+				case ConsoleKey.UpArrow:
+				case ConsoleKey.W:
+					match.CurrentTileNumber[0]--;
+					break;
+				case ConsoleKey.DownArrow:
+				case ConsoleKey.S:
+					match.CurrentTileNumber[0]++;
+					break;
+				case ConsoleKey.LeftArrow:
+				case ConsoleKey.A:
+					match.CurrentTileNumber[1]--;
+					break;
+				case ConsoleKey.RightArrow:
+				case ConsoleKey.D:
+					match.CurrentTileNumber[1]++;
+					break;
+				case ConsoleKey.Enter:
+					match.IsSelecting = false;
+					break;
+				case ConsoleKey.Escape:
+					match.IsRunning = false;
+					break;
+			}
+		}
 	}
 }
