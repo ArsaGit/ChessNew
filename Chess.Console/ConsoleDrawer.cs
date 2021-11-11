@@ -17,10 +17,14 @@
 		private const ConsoleColor SelectedColor = ConsoleColor.Green;
 		private const ConsoleColor DefaultTextColor = ConsoleColor.White;
 
+		private readonly string[] buttons = {"New game",
+							"Continue",
+							"Rating",
+							"Exit"};
+
 		public void Draw(Menu menu)
 		{
 			Console.Clear();
-			string[] buttons = menu.GetButtons();
 
 			Console.WriteLine("Chess\n");
 

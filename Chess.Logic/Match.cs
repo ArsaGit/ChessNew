@@ -24,7 +24,7 @@ namespace Chess.Logic
 		private readonly char[,] boardNotation;
 
 		private int[] currentTileNumber;
-		public int[] CurrentTileNumber 
+		public int[] CurrentTileNumber
 		{
 			get
 			{
@@ -33,11 +33,11 @@ namespace Chess.Logic
 			set
 			{
 				if (value[1] < 0) currentTileNumber[1] = Board.GetLength(1) - 1;
-				else if (value[1] > 8) currentTileNumber[1] = 0;
+				else if (value[1] > 7) currentTileNumber[1] = 0;
 				else currentTileNumber = value;
 
 				if (value[0] < 0) currentTileNumber[0] = Board.GetLength(0) - 1;
-				else if (value[0] > 8) currentTileNumber[0] = 0;
+				else if (value[0] > 7) currentTileNumber[0] = 0;
 				else currentTileNumber = value;
 			}
 		}
@@ -141,11 +141,6 @@ namespace Chess.Logic
 				}
 			}
 			return result;
-		}
-
-		private bool IsFigure(int[] coord)
-		{
-			return Board[coord[0], coord[1]] is Figure;
 		}
 	}
 }
