@@ -37,19 +37,19 @@ namespace Chess.Logic
 			{
 				case ConsoleKey.UpArrow:
 				case ConsoleKey.W:
-					match.CurrentTileNumber[0]--;
+					match.CurrentRow--;
 					break;
 				case ConsoleKey.DownArrow:
 				case ConsoleKey.S:
-					match.CurrentTileNumber[0]++;
+					match.CurrentRow++;
 					break;
 				case ConsoleKey.LeftArrow:
 				case ConsoleKey.A:
-					match.CurrentTileNumber[1]--;
+					match.CurrentColumn--;
 					break;
 				case ConsoleKey.RightArrow:
 				case ConsoleKey.D:
-					match.CurrentTileNumber[1]++;
+					match.CurrentColumn++;
 					break;
 				case ConsoleKey.Enter:
 					match.IsSelecting = false;

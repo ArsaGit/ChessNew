@@ -14,33 +14,16 @@ namespace Chess.Logic
 		private Player player1;
 		//private Player player2;
 
-		enum FigureType
-		{
-			Pawn = 'P', Bishop = 'B', Knight = 'N',
-			Rook = 'R', Queen = 'Q', King = 'K'
-		}
-
 		public Figure[,] Board { get; set; }
 		private readonly char[,] boardNotation;
 
-		private int[] currentTileNumber;
-		public int[] CurrentTileNumber
-		{
-			get
-			{
-				return currentTileNumber;
-			}
-			set
-			{
-				if (value[1] < 0) currentTileNumber[1] = Board.GetLength(1) - 1;
-				else if (value[1] > 7) currentTileNumber[1] = 0;
-				else currentTileNumber = value;
+		public int CurrentRow { get; set; }
+		public int CurrentColumn { get; set; }
 
-				if (value[0] < 0) currentTileNumber[0] = Board.GetLength(0) - 1;
-				else if (value[0] > 7) currentTileNumber[0] = 0;
-				else currentTileNumber = value;
-			}
-		}
+		public int MinRow { get; private set; }
+		public int MinColumn { get; private set; }
+		public int MaxRow { get; private set; }
+		public int MaxColumn { get; private set; }
 
 		public bool IsSelecting { get; set; }
 		public bool IsRunning { get; set; }
@@ -70,7 +53,14 @@ namespace Chess.Logic
 
 			IsSelecting = true;
 			IsRunning = true;
-			CurrentTileNumber = new int[] { 0, 0 };
+
+			CurrentRow = 0;
+			CurrentColumn = 0;
+
+			MinRow = 0;
+			MinColumn = 0;
+			MaxRow = Board.GetLength(0) - 1;
+			MaxColumn = Board.GetLength(1) - 1;
 		}
 
 		public void Run()
@@ -83,30 +73,32 @@ namespace Chess.Logic
 
 		private void MakeTurn()
 		{
-			int[] coord1, coord2;
+			(int, int) pos1, pos2;
+			do
+			{
+				Draw();
+				SelectTile();
+				CurrentRow = KeepInBounds(CurrentRow, MinRow, MaxRow);
+				CurrentColumn = KeepInBounds(CurrentColumn, MinColumn, MaxColumn);
+			} while (IsSelecting);
+
+			pos1 = (CurrentRow, CurrentColumn);
+
 			do
 			{
 				Draw();
 				SelectTile();
 			} while (IsSelecting);
 
-			coord1 = (int[])CurrentTileNumber.Clone();
+			pos2 = (CurrentRow, CurrentColumn);
 
-			do
-			{
-				Draw();
-				SelectTile();
-			} while (IsSelecting);
-
-			coord2 = (int[])CurrentTileNumber.Clone();
-
-			MoveFigure(coord1, coord2);
+			MoveFigure(pos1, pos2);
 		}
 
-		private void MoveFigure(int[] coord1, int[] coord2)
+		private void MoveFigure((int , int) pos1, (int, int) pos2)
 		{
-			Board[coord2[0], coord2[1]] = (Figure)Board[coord1[0], coord1[1]].Clone();
-			Board[coord1[0], coord1[1]] = null;
+			Board[pos2.Item1, pos2.Item2] = (Figure)Board[pos1.Item1, pos1.Item2].Clone();
+			Board[pos1.Item1, pos1.Item2] = null;
 		}
 
 		public void Draw()
@@ -119,9 +111,9 @@ namespace Chess.Logic
 			return boardNotation;
 		}
 
-		public bool IsSelectedFigure(int[] coords)
+		public bool IsSelectedFigure(int row, int column)
 		{
-			return CompareArrays(CurrentTileNumber, coords);
+			return (CurrentRow == row && CurrentColumn == column);
 		}
 
 		private void SelectTile()
@@ -129,18 +121,12 @@ namespace Chess.Logic
 			logic.SelectTile(this);
 		}
 
-		private static bool CompareArrays<T>(T[] array1, T[] array2)
+		private static int KeepInBounds(int value, int min, int max)
 		{
-			bool result = true;
-			if (array1.Length != array2.Length) return false;
-			else
-			{
-				for(int i = 0; i < array1.Length; i++)
-				{
-					if (!array1[i].Equals(array2[i])) result = false;
-				}
-			}
-			return result;
+			if (value < min) value = max;
+			else if (value > max) value = min;
+			else return value;
+			return value;
 		}
 	}
 }

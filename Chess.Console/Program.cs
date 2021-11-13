@@ -9,6 +9,10 @@ namespace Chess.Console
 		{
 			ChessGame chess = new(new ConsoleDrawer(), new ConsoleLogic());
 			chess.Run();
+
+
 		}
+
+
 	}
 }
