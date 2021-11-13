@@ -7,8 +7,12 @@ namespace Chess.Console
 	{
 		static void Main(string[] args)
 		{
-			ChessGame chess = new ChessGame(new ConsoleDrawer());
+			ChessGame chess = new(new ConsoleDrawer(), new ConsoleLogic());
 			chess.Run();
+
+
 		}
+
+
 	}
 }

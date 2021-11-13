@@ -9,12 +9,14 @@ namespace Chess.Logic
 	public class ChessGame
 	{
 		private readonly IDrawer drawer;
+		private readonly ILogic logic;
 		private readonly Menu menu;
 
-		public ChessGame(IDrawer drawer)
+		public ChessGame(IDrawer drawer, ILogic logic)
 		{
 			this.drawer = drawer;
-			menu = new Menu(drawer);
+			this.logic = logic;
+			menu = new Menu(drawer, logic);
 		}
 
 		public void Run()
@@ -29,13 +31,13 @@ namespace Chess.Logic
 			{
 				menu.Draw();
 				menu.SelectButton();
-			} while (menu.IsRunning());
+			} while (menu.IsRunning);
 		}
 
 		private void ActivateButton()
 		{
 			Console.Clear();
-			int key = menu.GetNumberOfCurrentButton();
+			int key = menu.CurrentButtonNumber;
 
 			switch (key)
 			{
@@ -60,8 +62,8 @@ namespace Chess.Logic
 			Player player1 = CreatePlayer();
 			//Console.WriteLine("Enter Player2:");
 			//Player player2 = CreatePlayer();
-			Match match = new Match(drawer, player1);
-			match.Draw();
+			Match match = new(drawer, logic, player1);
+			match.Run();
 		}
 
 		private Player CreatePlayer()

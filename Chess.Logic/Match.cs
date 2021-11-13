@@ -1,4 +1,4 @@
-﻿using Chess.Logic;
+﻿
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,25 +10,32 @@ namespace Chess.Logic
 	public class Match
 	{
 		private readonly IDrawer drawer;
+		private readonly ILogic logic;
 		private Player player1;
 		//private Player player2;
 
-		enum FigureType
-		{
-			Pawn = 'P', Bishop = 'B', Knight = 'N',
-			Rook = 'R', Queen = 'Q', King = 'K'
-		}
+		public Figure[,] Board { get; set; }
+		private readonly char[,] boardNotation;
 
-		private Figure[,] board;
-		private char[,] boardNotation;
+		public int CurrentRow { get; set; }
+		public int CurrentColumn { get; set; }
 
-		public Match(IDrawer drawer, Player player1)
+		public int MinRow { get; private set; }
+		public int MinColumn { get; private set; }
+		public int MaxRow { get; private set; }
+		public int MaxColumn { get; private set; }
+
+		public bool IsSelecting { get; set; }
+		public bool IsRunning { get; set; }
+
+		public Match(IDrawer drawer, ILogic logic, Player player1)
 		{
 			this.drawer = drawer;
+			this.logic = logic;
 			this.player1 = player1;
 			//this.player2 = player2;
 
-			board = new Figure[,] {
+			Board = new Figure[,] {
 				{ null, null, null, null, null, null, null, null},
 				{ null, null, null, null, null, null, null, null},
 				{ null, null, null, null, null, null, null, null},
@@ -43,39 +50,55 @@ namespace Chess.Logic
 				{'A','B','C','D','E','F','G','H'},
 				{'8','7','6','5','4','3','2','1'}
 			};
+
+			IsSelecting = true;
+			IsRunning = true;
+
+			CurrentRow = 0;
+			CurrentColumn = 0;
+
+			MinRow = 0;
+			MinColumn = 0;
+			MaxRow = Board.GetLength(0) - 1;
+			MaxColumn = Board.GetLength(1) - 1;
 		}
 
 		public void Run()
 		{
-
+			do
+			{
+				MakeTurn();
+			} while (IsRunning);
 		}
 
 		private void MakeTurn()
 		{
+			(int, int) pos1, pos2;
+			do
+			{
+				Draw();
+				SelectTile();
+				CurrentRow = KeepInBounds(CurrentRow, MinRow, MaxRow);
+				CurrentColumn = KeepInBounds(CurrentColumn, MinColumn, MaxColumn);
+			} while (IsSelecting);
 
+			pos1 = (CurrentRow, CurrentColumn);
+
+			do
+			{
+				Draw();
+				SelectTile();
+			} while (IsSelecting);
+
+			pos2 = (CurrentRow, CurrentColumn);
+
+			MoveFigure(pos1, pos2);
 		}
 
-		//private string GetCoordinates()
-		//{
-		//	string coordinate;
-
-		//	do
-		//	{
-		//		coordinate = Console.ReadLine();
-		//		coordinate = StrOptimization(coordinate);
-		//	} while (!IsCoordinateCorrect(coordinate));
-
-		//	return coordinate;
-		//}
-
-		//private bool IsCoordinateCorrect(string coordinate)
-		//{
-		//	return 
-		//}
-
-		private string StrOptimization(string str)
+		private void MoveFigure((int , int) pos1, (int, int) pos2)
 		{
-			return str.Trim().ToUpper();
+			Board[pos2.Item1, pos2.Item2] = (Figure)Board[pos1.Item1, pos1.Item2].Clone();
+			Board[pos1.Item1, pos1.Item2] = null;
 		}
 
 		public void Draw()
@@ -83,14 +106,27 @@ namespace Chess.Logic
 			drawer.Draw(this);
 		}
 
-		public Figure[,] GetBoard()
-		{
-			return board;
-		}
-
 		public char[,] GetBoardNotation()
 		{
 			return boardNotation;
+		}
+
+		public bool IsSelectedFigure(int row, int column)
+		{
+			return (CurrentRow == row && CurrentColumn == column);
+		}
+
+		private void SelectTile()
+		{
+			logic.SelectTile(this);
+		}
+
+		private static int KeepInBounds(int value, int min, int max)
+		{
+			if (value < min) value = max;
+			else if (value > max) value = min;
+			else return value;
+			return value;
 		}
 	}
 }

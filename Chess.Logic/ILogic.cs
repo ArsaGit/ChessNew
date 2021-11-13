@@ -6,12 +6,9 @@ using System.Threading.Tasks;
 
 namespace Chess.Logic
 {
-	public interface IDrawer
+	public interface ILogic
 	{
-		void Draw(Menu menu);
-		void DrawContinueGame();
-		void DrawRating();
-		void DrawExit();
-		void Draw(Match match);
+		void SelectButton(Menu menu);
+		void SelectTile(Match match);
 	}
 }

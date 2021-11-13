@@ -7,38 +7,40 @@
 	{
 		private const int boardWidth = 8;
 		private const int boardHeight = 8;
-		private int indent = 3;
 
-		private int cellWidth = 3;
-		private int cellHeight = 1;
+		private readonly int topIndent = 5;
+		private readonly int leftIndent = 10;
 
+		private readonly int cellWidth = 3;
+		private readonly int cellHeight = 1;
+
+		private const ConsoleColor SelectedColor = ConsoleColor.Green;
+		private const ConsoleColor DefaultTextColor = ConsoleColor.White;
+
+		private readonly string[] buttons = {"New game",
+							"Continue",
+							"Rating",
+							"Exit"};
 
 		public void Draw(Menu menu)
 		{
 			Console.Clear();
-			string[] buttons = menu.GetButtons();
 
 			Console.WriteLine("Chess\n");
 
 			for (int i = 0; i < buttons.Length; i++)
 			{
-				if (menu.isCurrentButton(i))
+				if (menu.IsCurrentButton(i))
 				{
-					Console.ForegroundColor = menu.GetSelectedColor();
+					Console.ForegroundColor = SelectedColor;
 				}
 				else
 				{
-					Console.ForegroundColor = menu.GetDefaultTextColor();
+					Console.ForegroundColor = DefaultTextColor;
 				}
 				Console.WriteLine(buttons[i]);
 			}
-
-			menu.ResetColor();
-		}
-
-		public void DrawNewGame()
-		{
-			
+			Console.ResetColor();
 		}
 
 		public void DrawContinueGame()
@@ -59,19 +61,15 @@
 		public void Draw(Match match)
 		{
 			Console.Clear();
-			Figure[,] board = match.GetBoard();
 			DrawBorders();
-			DrawFigures(board);
+			DrawFigures(match);
 			DrawBoardNotation(match);
-			Console.SetCursorPosition(indent, indent + 16);			//это тут из-за того,
-			Console.Write("└");										//что почему-то не прогружается самая нижняя граница
-			Console.SetCursorPosition(indent + 1, indent + 16);		//
-			Console.Write("─");
+			Console.CursorVisible = false;
 		}	 
 
 		private void DrawBorders()
 		{
-			Console.SetCursorPosition(indent, indent);
+			Console.SetCursorPosition(leftIndent, topIndent);
 
 			int maxX = boardWidth * cellWidth + boardWidth + 1;
 			int maxY = boardHeight * cellHeight + boardHeight + 1;
@@ -84,7 +82,7 @@
 
 				for (int x = 0; x < maxX; x++)
 				{
-					Console.SetCursorPosition(indent + x, indent + y);
+					Console.SetCursorPosition(leftIndent + x, topIndent + y);
 
 					bool isFirstColumn = x == 0;
 					bool isLastColumn = x == (maxX - 1);
@@ -124,23 +122,41 @@
 			}
 		}
 
-		private void DrawFigures(Figure[,] board)
+		private void DrawFigures(Match match)
 		{
 			int xStep = cellWidth + 1;
 			int yStep = cellHeight + 1;
 
 			for (int row = 0; row < 8; row++)
+			{
 				for (int column = 0; column < 8; column++)
 				{
-					int x = indent + xStep * column + 1;
-					int y = indent + yStep * row + 1;
+					int x = leftIndent + xStep * column + 1;
+					int y = topIndent + yStep * row + 1;
 
 					Console.SetCursorPosition(x, y);
-					if (board[row, column] is Figure)
-						Console.Write(board[row, column].ToChar());
+
+					char symbol;
+
+					if(match.Board[row, column] is Figure)
+					{
+						symbol = match.Board[row, column].ToChar();
+					}
 					else
-						Console.Write(' ');
+					{
+						symbol = ' ';
+					}
+
+					if (match.IsSelectedFigure(row, column))
+					{
+						ColorTile(symbol);
+					}
+
+					Console.Write(symbol);
+
+					Console.ResetColor();
 				}
+			}
 		}
 
 		private void DrawBoardNotation(Match match)
@@ -151,10 +167,22 @@
 
 			for (int i = 0; i < 8; i++)
 			{
-				Console.SetCursorPosition(indent + i * xStep + 1, indent - 1);
+				Console.SetCursorPosition(leftIndent + i * xStep + 1, topIndent - 1);
 				Console.Write(boardNotation[0, i]);
-				Console.SetCursorPosition(indent - 1, indent + i * yStep + 1);
+				Console.SetCursorPosition(leftIndent - 1, topIndent + i * yStep + 1);
 				Console.Write(boardNotation[1, i]);
+			}
+		}
+
+		private static void ColorTile(char symbol)
+		{
+			if(symbol.Equals(' '))
+			{
+				Console.BackgroundColor = SelectedColor;
+			}
+			else
+			{
+				Console.ForegroundColor = SelectedColor;
 			}
 		}
 	}
