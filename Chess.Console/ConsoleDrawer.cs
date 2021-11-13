@@ -147,7 +147,7 @@
 						symbol = ' ';
 					}
 
-					if (match.IsSelectedFigure(row, column))
+					if (match.IsSelectedTile(row, column))
 					{
 						ColorTile(symbol);
 					}

@@ -74,22 +74,14 @@ namespace Chess.Logic
 		private void MakeTurn()
 		{
 			(int, int) pos1, pos2;
-			do
-			{
-				Draw();
-				SelectTile();
-				CurrentRow = KeepInBounds(CurrentRow, MinRow, MaxRow);
-				CurrentColumn = KeepInBounds(CurrentColumn, MinColumn, MaxColumn);
-			} while (IsSelecting);
-
-			pos1 = (CurrentRow, CurrentColumn);
 
 			do
 			{
-				Draw();
 				SelectTile();
-			} while (IsSelecting);
+				pos1 = (CurrentRow, CurrentColumn);
+			} while (!IsFigure(pos1));
 
+			SelectTile();
 			pos2 = (CurrentRow, CurrentColumn);
 
 			MoveFigure(pos1, pos2);
@@ -97,8 +89,12 @@ namespace Chess.Logic
 
 		private void MoveFigure((int , int) pos1, (int, int) pos2)
 		{
-			Board[pos2.Item1, pos2.Item2] = (Figure)Board[pos1.Item1, pos1.Item2].Clone();
-			Board[pos1.Item1, pos1.Item2] = null;
+			Figure figure = (Figure)Board[pos1.Item1, pos1.Item2].Clone();
+			if (figure.IsMoveCorrect(pos1, pos2))
+			{
+				Board[pos2.Item1, pos2.Item2] = figure;
+				Board[pos1.Item1, pos1.Item2] = null;
+			}
 		}
 
 		public void Draw()
@@ -111,14 +107,25 @@ namespace Chess.Logic
 			return boardNotation;
 		}
 
-		public bool IsSelectedFigure(int row, int column)
+		public bool IsSelectedTile(int row, int column)
 		{
 			return (CurrentRow == row && CurrentColumn == column);
 		}
 
 		private void SelectTile()
 		{
-			logic.SelectTile(this);
+			do
+			{
+				Draw();
+				logic.SelectTile(this);
+				CurrentRow = KeepInBounds(CurrentRow, MinRow, MaxRow);
+				CurrentColumn = KeepInBounds(CurrentColumn, MinColumn, MaxColumn);
+			} while (IsSelecting);
+		}
+
+		private bool IsFigure((int y, int x) pos)
+		{
+			return Board[pos.y, pos.x] is Figure;
 		}
 
 		private static int KeepInBounds(int value, int min, int max)
